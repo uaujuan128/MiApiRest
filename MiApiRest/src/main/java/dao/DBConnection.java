@@ -31,7 +31,7 @@ public class DBConnection {
     
     private final DataSource hirakiDatasource = null;
     
-    private DBConnection() {
+    DBConnection() {
         //hirakiDatasource = getDataSourceHikari();
     }
 

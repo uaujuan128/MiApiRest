@@ -30,8 +30,8 @@ import util.PasswordHash;
  *
  * @author user
  */
-@WebServlet(name = "RestCutre", urlPatterns = {"/rest/cutre"})
-public class RestCutre extends HttpServlet {
+@WebServlet(name = "RestAlumnos", urlPatterns = {"/rest/RestAlumnos"})
+public class RestAlumnos extends HttpServlet {
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -64,8 +64,18 @@ public class RestCutre extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
        
+        AlumnosServicios as = new AlumnosServicios();
         Alumno alumno = (Alumno) request.getAttribute("alumno");
-        long id = alumno.getId();
+        
+        if(request.getAttribute("alumno") == "si")
+        {
+             request.setAttribute("json", as.deleteCascadeAlumno(alumno));
+        }
+        
+        
+        request.setAttribute("json", as.deleteAlumno(alumno));
+        
+        
     }
 
     @Override
