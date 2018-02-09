@@ -1,0 +1,15 @@
+{
+    "name": "vendor/base-de-datos-p-h-p",
+    "description": "Description of project BaseDeDatosPHP.",
+    "authors": [
+        {
+            "name": "DAW",
+            "email": "your@email.here"
+        }
+    ],
+    "require": {
+        "twig/twig": "v2.4.4",
+        "guzzlehttp/guzzle": "6.3.0",
+        "firebase/php-jwt": "v5.0.0"
+    }
+}
