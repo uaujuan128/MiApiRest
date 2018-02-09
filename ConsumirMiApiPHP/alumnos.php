@@ -103,12 +103,12 @@
                     },
                     success:  function (response) 
                     {
-                            if (response == "no_error")
+                            if (response == "1")
                             {
                                     fila.parentNode.removeChild(fila);
                                     document.getElementById("respuesta").innerHTML = "El alumno: "+nombre+" ha sido eliminado correctamente";
                             }
-                            else if (response == "error")
+                            else if (response == "0")
                             {
                                     var confirmacion2 = confirm("Este usuario tiene una nota asignada. ¿Quieres borrarla también?");
                                     if (confirmacion2 == true)
@@ -135,14 +135,14 @@
                         url:'alumnosDAO.php',
                         data:datos,
                         beforeSend: function () 
-						{
-							$("#respuesta").html("Procesando, espere por favor...");
-						},
-						success:  function (response) 
-						{
-							$("#respuesta").html(response);
-							fila.parentNode.removeChild(fila);
-						}
+                        {
+                                $("#respuesta").html("Procesando, espere por favor...");
+                        },
+                        success:  function (response) 
+                        {
+                                $("#respuesta").html(response);
+                                fila.parentNode.removeChild(fila);
+                        }
 						
                 });
 		}
@@ -211,7 +211,7 @@
 		return $dia."-".$mes."-".$ano;
 	}
 	
-    $uri = 'http://localhost:8080/baseDatos/rest/cutre';
+    $uri = 'http://localhost:8080/MiApiRest/rest/RestAlumnos';
     //$header = array('headers' => array('X-Auth-Token' => '447878d6ad3e4da7bc65bac030cd061e'));
     $response = $client->request('GET', $uri);
     $alumnos = json_decode($response->getBody());
