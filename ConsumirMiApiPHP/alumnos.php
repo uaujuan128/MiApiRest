@@ -113,7 +113,7 @@
                                     var confirmacion2 = confirm("Este usuario tiene una nota asignada. ¿Quieres borrarla también?");
                                     if (confirmacion2 == true)
                                     {
-                                            delete_cascade(id);
+                                            delete_cascade(id, nombre);
                                     }
                                     else if (confirmacion2 == false)
                                     {
@@ -126,7 +126,7 @@
             }
         }
 		
-		function delete_cascade(id)
+		function delete_cascade(id, nombre)
 		{
 			var fila = document.getElementById(id);
 			var datos = "id="+id+"&op=DELETE_CASCADE";
@@ -140,8 +140,16 @@
                         },
                         success:  function (response) 
                         {
-                                $("#respuesta").html(response);
+                            if(response > 0)
+                            {
+                                $("#respuesta").html("El alumno: "+nombre+" ha sido eliminado correctamente");
                                 fila.parentNode.removeChild(fila);
+                            }
+                            else
+                            {
+                                $("#respuesta").html("Ha habido un error al borrrar");
+                            }
+                                
                         }
 						
                 });
