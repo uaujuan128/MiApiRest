@@ -1,71 +1,103 @@
 <?php
-   
-    $mysql = new PDO('mysql:host=db4free.net:3307;dbname=clasesdaw', 'oscarnovillo', 'c557ef');
-    
-    if (isset($_GET['id'])){$id = $_GET['id'];} else {$id=null;}
-    if (isset($_GET['nombre'])){$nombre = $_GET['nombre'];} else {$nombre=null;}
-    if (isset($_GET['curso'])){$curso = $_GET['curso'];} else {$fecha=null;}
-    if (isset($_GET['ciclo'])){$ciclo = $_GET['ciclo']; } else {$mayor=null;}
-    if (isset($_GET['op'])){$op = $_GET['op'];} else {$op=null;}
-    
-    switch ($op)
+
+    require 'vendor/autoload.php';
+
+    use GuzzleHttp\Client;
+    use GuzzleHttp\Exception\ClientException;
+
+    $client = new Client();
+
+    $uri = 'http://localhost:8080/MiApiRest/rest/RestNotas';
+    //$header = array('headers' => array('X-Auth-Token' => '447878d6ad3e4da7bc65bac030cd061e'));
+
+    if (isset($_GET['id'])) 
     {
+        $id = $_GET['id'];
+    } 
+    else 
+    {
+        $id = null;
+    }
+    
+    if (isset($_GET['nombre'])) 
+    {
+        $nombre = $_GET['nombre'];
+    } 
+    else 
+    {
+        $nombre = null;
+    }
+    
+    if (isset($_GET['curso'])) 
+    {
+        $curso = $_GET['curso'];
+    } 
+    else 
+    {
+        $curso = null;
+    }
+    
+    if (isset($_GET['ciclo'])) 
+    {
+        $ciclo = $_GET['ciclo'];
+    } 
+    else 
+    {
+        $ciclo = null;
+    }
+    
+    if (isset($_GET['op'])) 
+    {
+        $op = $_GET['op'];
+    } 
+    else 
+    {
+        $op = null;
+    }
+
+    $asignatura = new \stdClass;
+
+    switch ($op) {
         case "UPDATE":
-		
-		try 
-		{
-			$stmt = $mysql->prepare("UPDATE ASIGNATURAS SET NOMBRE=?, CURSO=?, CICLO=? WHERE ID = ?");
-			$stmt->bindParam(1, $nombre);
-			$stmt->bindParam(2, $curso);
-			$stmt->bindParam(3, $ciclo);
-			$stmt->bindParam(4, $id);
-			$stmt->execute();
 
-			// echo a message to say the UPDATE succeeded
-			echo "El usuario con id ".$id." se ha actualizado correctamente";
-		}
-		catch(PDOException $e)
-		{
-			echo $sql . "<br>" . $e->getMessage();
-		}
+            $asignatura->id= $id;
+            $asignatura->nombre = $nombre;
+            $asignatura->curso = $curso;
+            $asignatura->ciclo = $ciclo;
 
-		$conn = null;
-		break;
-		
-		case "DELETE":
-		try 
-		{
-				$stmt = $mysql->prepare("DELETE FROM ASIGNATURAS WHERE ID=?");
-				$stmt->bindParam(1, $id);
-				$stmt->execute();
-				
-			echo $stmt->rowCount();
-		}
-		catch(PDOException $e)
-		{
-			echo $sql . "<br>" . $e->getMessage();
-		}
-            
-        break;
-		
-		case "DELETE_CASCADE":
-		$stmt = $mysql->prepare("DELETE FROM NOTAS WHERE ID_ASIGNATURA = ?");
-		$stmt->bindParam(1, $id);
-		$stmt->execute();
-		
-		$stmt2 = $mysql->prepare("DELETE FROM ASIGNATURAS WHERE ID = ?");
-		$stmt2->bindParam(1, $id);
-		$stmt2->execute();
-		echo $stmt->rowCount();
-		break;
-		
-		case "INSERT":
-		$stmt = $mysql->prepare("INSERT ASIGNATURAS (NOMBRE, CURSO, CICLO)  VALUES (?, ?, ?)");
-		$stmt->bindParam(1, $nombre);
-		$stmt->bindParam(2, $curso);
-		$stmt->bindParam(3, $ciclo);
-		$stmt->execute();
-		echo $stmt->rowCount();
+            //$header = array('headers' => array('X-Auth-Token' => '447878d6ad3e4da7bc65bac030cd061e'));
+            $request = $client->request('POST', $uri, ['query' => ['asignatura' => json_encode($asignatura)]]);
+            $asignaturas = json_decode($request->getBody());
+            echo $asignaturas;
+            break;
+        
+        case "DELETE":
+            $asignatura->id= $id;
 
+            //$header = array('headers' => array('X-Auth-Token' => '447878d6ad3e4da7bc65bac030cd061e'));
+            $request = $client->delete($uri, ['query' => ['asignatura' => json_encode($asignatura), 'borrar_notas' => "no"]]);
+            $asignaturas = json_decode($request->getBody());
+            echo $asignaturas;
+            break;
+        
+        case "DELETE_CASCADE":
+            $asignatura->id= $id;
+
+            //$header = array('headers' => array('X-Auth-Token' => '447878d6ad3e4da7bc65bac030cd061e'));
+            $request = $client->delete($uri, ['query' => ['asignatura' => json_encode($asignatura), 'borrar_notas' => "si"]]);
+            $asignaturas = json_decode($request->getBody());
+            echo $asignaturas;
+            break;
+
+        case "INSERT":
+            $asignatura->nombre = $nombre;
+            $asignatura->curso = $curso;
+            $asignatura->ciclo = $ciclo;
+
+            //$header = array('headers' => array('X-Auth-Token' => '447878d6ad3e4da7bc65bac030cd061e'));
+            $request = $client->request('PUT', $uri, ['query' => ['asignatura' => json_encode($asignatura)]]);
+            $asignaturas = json_decode($request->getBody());
+            echo $asignaturas;
+            break;
     }
 ?>

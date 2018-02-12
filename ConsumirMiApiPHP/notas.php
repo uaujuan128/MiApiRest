@@ -86,13 +86,25 @@
 	<a href="asignaturas.php">Asignaturas</a>
 	
     <span  id="respuesta"></span><br><br>
-	
+    <?php
+    $uri = 'http://localhost:8080/MiApiRest/rest/RestNotas';
+    
+    
+    //$header = array('headers' => array('X-Auth-Token' => '447878d6ad3e4da7bc65bac030cd061e'));
+    $response = $client->request('GET', $uri, ['query' => ['accion' => 'alumnos']]);
+    $alumnos = json_decode($response->getBody());
+    
+    
+    $response2 = $client->request('GET', $uri, ['query' => ['accion' => 'asignaturas']]);
+    $asignaturas = json_decode($response2->getBody());
+    ?>
+
 	Seleccionar alumnos:
 	<select id="alumno">
-	<?php
-		while ($fila = $alumnos->fetch_row()) 
+            <?php
+		foreach ($alumnos as $alumno)
 			{
-				echo "<option value=".$fila[0].">".$fila[1]."</option>";
+				echo "<option value=".$alumno->id.">".$alumno->nombre."</option>";
 			}
 	?>
 	</select>
@@ -100,9 +112,9 @@
 	Seleccionar asignaturas:
 	<select id="asignatura">
 	<?php
-		while ($fila = $asignaturas->fetch_row()) 
+		foreach ($asignaturas as $asignatura) 
 			{
-				echo "<option value=".$fila[0].">".$fila[1]."</option>";
+				echo "<option value=".$asignatura->id.">".$asignatura->nombre."</option>";
 			}
 	?>
 	</select>

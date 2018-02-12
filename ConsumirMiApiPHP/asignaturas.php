@@ -41,7 +41,14 @@
                     data:datos,
                     success:function(resp)
                     {
-                            $("#respuesta").html(resp);
+                        if (resp > 0 )
+                        {
+                            $("#respuesta").html("Asignatura actualizada correctamente");
+                        }
+                        else
+                        {
+                            $("#respuesta").html("Ha habido un problema al actualizar la asignatura");
+                        }
                     }
             });
         }
@@ -62,29 +69,29 @@
                         url:'asignaturasDAO.php',
                         data:datos,
                         beforeSend: function () 
-						{
-							$("#respuesta").html("Procesando, espere por favor...");
-						},
-						success:  function (response) 
-						{
-							if (response == 1)
-							{
-								fila.parentNode.removeChild(fila);
-								response = "Asignatura "+nombre+" borrado correctamente";
-							}
-							else if (response == 0)
-							{
-								var confirmacion2 = confirm("Esta asignatura tiene una nota asignada. ¿Quieres borrarla también?");
-								if (confirmacion2 == true)
-								{
-									delete_cascade(id);
-								}
-								else if (confirmacion2 == false)
-								{
-									document.getElementById("respuesta").innerHTML = "La asignatura: "+nombre+" no ha sido eliminada";
-								}
-							}
-						}
+                        {
+                                $("#respuesta").html("Procesando, espere por favor...");
+                        },
+                        success:  function (response) 
+                        {
+                            if (response == 1)
+                            {
+                                    fila.parentNode.removeChild(fila);
+                                    response = "Asignatura "+nombre+" borrado correctamente";
+                            }
+                            else if (response == 0)
+                            {
+                                    var confirmacion2 = confirm("Esta asignatura tiene una nota asignada. ¿Quieres borrarla también?");
+                                    if (confirmacion2 == true)
+                                    {
+                                            delete_cascade(id);
+                                    }
+                                    else if (confirmacion2 == false)
+                                    {
+                                            document.getElementById("respuesta").innerHTML = "La asignatura: "+nombre+" no ha sido eliminada";
+                                    }
+                            }
+                        }
 						
                 });
             }
@@ -99,22 +106,22 @@
                         url:'asignaturasDAO.php',
                         data:datos,
                         beforeSend: function () 
-						{
-							$("#respuesta").html("Procesando, espere por favor...");
-						},
-						success:  function (response) 
-						{
-							if (response > 0)
-							{
-								fila.parentNode.removeChild(fila);
-								response = "Asignatura y nota borradas correctamente";
-							}
-							else if (response == 0)
-							{
-								response = "Ha habido un error";
-							}
-							$("#respuesta").html(response);
-						}
+                        {
+                                $("#respuesta").html("Procesando, espere por favor...");
+                        },
+                        success:  function (response) 
+                        {
+                                if (response > 0)
+                                {
+                                        fila.parentNode.removeChild(fila);
+                                        response = "Asignatura y nota borradas correctamente";
+                                }
+                                else if (response == 0)
+                                {
+                                        response = "Ha habido un error";
+                                }
+                                $("#respuesta").html(response);
+                        }
 						
                 });
 		}
@@ -133,14 +140,14 @@
                     url:'asignaturasDAO.php',
                     data:datos,
                     beforeSend: function () 
-					{
+                    {
                         $("#resultado").html("Procesando, espere por favor...");
-					},
-					success:  function (response) 
-					{
-						$("#resultado").html(response);
-						recargar();
-					}
+                    },
+                    success:  function (response) 
+                    {
+                        $("#resultado").html(response);
+                        recargar();
+                    }
             });
 
         }
@@ -166,26 +173,24 @@
 		</tr>    
 <?php
 		
-    try 
-		{
-			foreach($mysql->query('SELECT * from ASIGNATURAS') as $fila) 
-			{
-				echo "<tr id='".$fila[0]."'>\n"
-				. "<td>".$fila[1]."</td>\n"
-				. "<td>".$fila[2]."</td>\n"
-				. "<td>".$fila[3]."</td>\n"
-				. "<td><button onclick=\"editar(".$fila[0].", '".$fila[1]."', '".$fila[2]."', '".$fila[3]."')\">Editar</td>\n"
-				. "<td><button onclick=\"borrar(".$fila[0].", '".$fila[1]."')\">Borrar</td>\n"
-				. "</tr>\n\n";
-			}
-		echo "</table>";
-		$mysql = null;
-		} 
-		catch (PDOException $e) 
-		{
-			print "¡Error!: " . $e->getMessage() . "<br/>";
-			die();
-		}
+     $uri = 'http://localhost:8080/MiApiRest/rest/RestNotas';
+    //$header = array('headers' => array('X-Auth-Token' => '447878d6ad3e4da7bc65bac030cd061e'));
+    $response = $client->request('GET', $uri);
+    $asignaturas = json_decode($response->getBody());
+
+    foreach ($asignaturas as $asignatura)
+    {
+                echo "<tr id='".$asignatura->id."'>\n"
+                . "<td>".$asignatura->nombre."</td>\n"
+                . "<td>".$asignatura->curso."</td>\n"
+                . "<td>".$asignatura->ciclo."</td>\n"
+                . "<td><button onclick=\"editar(".$asignatura->id.", '".$asignatura->nombre."', '".$asignatura->curso."', '".$asignatura->ciclo."')\">Editar</td>\n"
+                . "<td><button onclick=\"borrar(".$asignatura->id.", '".$asignatura->nombre."')\">Borrar</td>\n"
+                . "</tr>\n\n";
+        }
+    echo "</table>";
+    $mysql = null;
+    
    
 ?>
 </body>

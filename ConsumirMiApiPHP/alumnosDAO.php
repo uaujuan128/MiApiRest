@@ -22,17 +22,18 @@
     
     switch ($op) {
     case "UPDATE":
-        $stmt = $mysqli->prepare("UPDATE ALUMNOS SET NOMBRE=?, FECHA_NACIMIENTO=?, MAYOR_EDAD=? WHERE ID=?");
-        $stmt->bind_param("sssi", $nombre, $fecha, $mayor, $id);
-        $stmt->execute();
-
-        if ($mysqli->errno != 0) {
-            echo "Ha habido un error";
-        } else {
-            echo "El usuario con id:" . $id . " ha sido actualizado correctamente";
-        }
+        $alumno->id= $id;
+        $alumno->nombre = $nombre;
+        $alumno->fecha_nacimiento = $fecha;
+        $alumno->mayor_edad = $mayor;
+        
+        $uri = 'http://localhost:8080/MiApiRest/rest/RestAlumnos';
+        //$header = array('headers' => array('X-Auth-Token' => '447878d6ad3e4da7bc65bac030cd061e'));
+        $request = $client->request('POST', $uri, ['query' => ['alumno' => json_encode($alumno)]]);
+        $alumnos = json_decode($request->getBody());
+        echo $alumnos;
         break;
-
+    
     case "DELETE":
         $alumno->id = $id;
 

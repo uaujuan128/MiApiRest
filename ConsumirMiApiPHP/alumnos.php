@@ -53,11 +53,11 @@
 
             if (document.getElementsByName("mayor"+id)[0].checked == true)
             {
-                mayor = 1;
+                mayor = true;
             }
             else
             {
-                mayor=0;
+                mayor = false;
             }
 
             document.getElementById(id).innerHTML=
@@ -75,7 +75,14 @@
                     data:datos,
                     success:function(resp)
                     {
-                            $("#respuesta").html(resp);
+                        if (resp > 0)
+                        {
+                            $("#respuesta").html("El alumno ha sido editado correctamente");
+                        }
+                        else
+                        {
+                            $("#respuesta").html("Ha habido un error al actualizar el alumno");
+                        }
                     }
             });
             return false;
@@ -163,11 +170,11 @@
 
             if (document.getElementsByName("mayor_insertar")[0].checked == true)
             {
-                mayor_insertar = 1;
+                mayor_insertar = true;
             }
             else
             {
-                mayor_insertar = 0;
+                mayor_insertar = false;
             }
 
 
