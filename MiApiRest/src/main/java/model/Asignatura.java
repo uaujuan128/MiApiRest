@@ -64,4 +64,10 @@ public class Asignatura
     public void setCiclo(String ciclo) {
         this.ciclo = ciclo;
     }
+
+    public Asignatura(long id, String nombre) {
+        this.id = id;
+        this.nombre = nombre;
+    }
+    
 }

@@ -96,7 +96,7 @@ public class AlumnosDAO {
         try {
             con = db.getConnection();
             
-            String sql="UPDATE ALUMNOS SET NOMBRE=?, FECHA_NACIMIENTO=?, MAYOR_EDAD=? WHERE ID=?;";
+            String sql="update alumnos set nombre=?, fecha_nacimiento=?, mayor_edad=? where id=?";
             
             pstm = con.prepareStatement(sql);
             
@@ -147,18 +147,25 @@ public class AlumnosDAO {
         DBConnection db = new DBConnection();
         Connection con = null;
         PreparedStatement pstm = null;
+        PreparedStatement pstm2 = null;
         int filas = 0;
         
         try {
             con = db.getConnection();
+            con.setAutoCommit(false);
             
-            String sql="delete from alumnos where id=?";
-            
+            String sql="delete from notas where id_alumno=?";
             pstm = con.prepareStatement(sql);
-            
             pstm.setLong(1, u.getId());
             
+            String sql2="delete from alumnos where id=?";
+            pstm2 = con.prepareStatement(sql2);
+            pstm2.setLong(1, u.getId());
+            
             filas = pstm.executeUpdate();
+            filas += pstm2.executeUpdate();
+            con.setAutoCommit(true);
+            
             
         } catch (Exception ex) {
             Logger.getLogger(AlumnosDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -178,7 +185,7 @@ public class AlumnosDAO {
         try {
             con = db.getConnection();
             
-            String sql="INSERT INTO ALUMNOS (NOMBRE, FECHA_NACIMIENTO, MAYOR_EDAD) VALUES (?, ?, ?);";
+            String sql="insert into alumnos (nombre, fecha_nacimiento, mayor_edad) values (?, ?, ?)";
             
             pstm = con.prepareStatement(sql);
             

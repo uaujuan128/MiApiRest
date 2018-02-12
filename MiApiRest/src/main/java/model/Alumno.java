@@ -26,6 +26,13 @@ public class Alumno {
         this.mayor_edad = mayor_edad;
     }
 
+    public Alumno(long id, String nombre) {
+        this.id = id;
+        this.nombre = nombre;
+    }
+
+    
+
     public long getId() {
         return id;
     }

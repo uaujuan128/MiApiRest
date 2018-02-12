@@ -24,9 +24,17 @@ public class AsignaturasServicios
         return dao.borrarAsignatura(asignaturaNuevo);
     }
     
-    public int insertAlumno(Asignatura asignaturaNuevo)
+    public int insertAsignatura(Asignatura asignaturaNuevo)
     {
         AsignaturasDAO dao = new AsignaturasDAO();
         return dao.insertarAsignatura(asignaturaNuevo);
     }
+    
+    public int deleteCascadeAsignatura(Asignatura asignaturaNuevo)
+    {
+        AsignaturasDAO dao = new AsignaturasDAO();
+        return dao.borrarAsignaturayNotas(asignaturaNuevo);
+    }
+    
+   
 }

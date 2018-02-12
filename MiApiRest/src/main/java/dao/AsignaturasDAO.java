@@ -33,7 +33,7 @@ public class AsignaturasDAO {
             con = db.getConnection();
             stmt = con.createStatement();
             String sql;
-            sql = "SELECT * FROM ASIGNATURAS";
+            sql = "select * from asignaturas";
             rs = stmt.executeQuery(sql);
 
             //STEP 5: Extract data from result set
@@ -77,7 +77,7 @@ public class AsignaturasDAO {
         try {
             con = db.getConnection();
             
-            String sql="UPDATE ASIGNATURAS SET NOMBRE=?, CURSO=?, CICLO=? WHERE ID=?;";
+            String sql="update asignaturas set nombre=?, curso=?, ciclo=? where id=?";
             
             pstm = con.prepareStatement(sql);
             
@@ -111,13 +111,46 @@ public class AsignaturasDAO {
         try {
             con = db.getConnection();
             
-            String sql="delete from ASIGNATURAS where id=?;";
+            String sql="delete from asignaturas where id=?;";
             
             pstm = con.prepareStatement(sql);
             
             pstm.setLong(1, u.getId());
             
             filas = pstm.executeUpdate();
+            
+        } catch (Exception ex) {
+            Logger.getLogger(AlumnosDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            db.cerrarConexion(con);
+        }
+        return filas;
+    }
+    
+    public int borrarAsignaturayNotas(Asignatura u)
+    {
+        DBConnection db = new DBConnection();
+        Connection con = null;
+        PreparedStatement pstm = null;
+        PreparedStatement pstm2 = null;
+        int filas = 0;
+        
+        try {
+            con = db.getConnection();
+            con.setAutoCommit(false);
+            
+            String sql="delete from notas where id_asignatura=?";
+            pstm = con.prepareStatement(sql);
+            pstm.setLong(1, u.getId());
+            
+            String sql2="delete from asignaturas where id=?";
+            pstm2 = con.prepareStatement(sql2);
+            pstm2.setLong(1, u.getId());
+            
+            filas = pstm.executeUpdate();
+            filas += pstm2.executeUpdate();
+            con.setAutoCommit(true);
+            
             
         } catch (Exception ex) {
             Logger.getLogger(AlumnosDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -137,7 +170,7 @@ public class AsignaturasDAO {
         try {
             con = db.getConnection();
             
-            String sql="INSERT INTO ASIGNATURAS (NOMBRE, CURSO, CICLO) VALUES (?, ?, ?);";
+            String sql="insert into asignaturas (nombre, curso, ciclo) values (?, ?, ?)";
             
             pstm = con.prepareStatement(sql);
             

@@ -5,33 +5,26 @@
  */
 package servlets;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.client.json.GenericJson;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Alumno;
-import model.ErrorHttp;
+import model.Asignatura;
+import model.Nota;
 import servicios.AlumnosServicios;
-import util.PasswordHash;
+import servicios.AsignaturasServicios;
+import servicios.NotasServicios;
 
 /**
  *
  * @author user
  */
-@WebServlet(name = "RestAlumnos", urlPatterns = {"/rest/RestAlumnos"})
-public class RestAlumnos extends HttpServlet {
+@WebServlet(name = "RestNotas", urlPatterns = {"/rest/RestNotas"})
+public class RestNotas extends HttpServlet {
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -53,9 +46,23 @@ public class RestAlumnos extends HttpServlet {
 //        alumno.setNombre("KIKO");
 //        alumnos.add(alumno);
 //        request.setAttribute("json", alumnos);
-        AlumnosServicios a = new AlumnosServicios();
-        List<Alumno> alumnos = a.getAllAlumnos();
-        request.setAttribute("json", alumnos);
+        NotasServicios a = new NotasServicios();
+        Nota nota = (Nota) request.getAttribute("nota");
+        
+        if("alumnos".equals(request.getParameter("accion")))
+        {
+            List<Alumno> alumnos = a.todos_los_alumnos();
+            request.setAttribute("json", alumnos);
+        }
+        else if("asignaturas".equals(request.getParameter("accion")))
+        {
+            List<Asignatura> asignaturas = a.todas_las_asignaturas();    
+            request.setAttribute("json", asignaturas);
+        }
+        else if("comprobar".equals(request.getParameter("accion")))
+        {
+            request.setAttribute("json", a.consultar_nota(nota));
+        }
     }
 
     
@@ -64,26 +71,30 @@ public class RestAlumnos extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
        
-        AlumnosServicios as = new AlumnosServicios();
-        Alumno alumno = (Alumno) request.getAttribute("alumno");
+        AsignaturasServicios as = new AsignaturasServicios();
+        Asignatura asignatura = (Asignatura) request.getAttribute("asignatura");
+        
         String respuesta = request.getParameter("borrar_notas");
         
-        if(respuesta.equals("si"))
+        if (asignatura.getNombre() == null)
         {
-             request.setAttribute("json", as.deleteCascadeAlumno(alumno));
-        }
-        else
-        {
-            request.setAttribute("json", as.deleteAlumno(alumno));
+            if(respuesta.equals("si"))
+            {
+                 request.setAttribute("json", as.deleteCascadeAsignatura(asignatura));
+            }
+            else
+            {
+                request.setAttribute("json", as.deleteAsignatura(asignatura));
+            }
         }
         
     }
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
-        AlumnosServicios as = new AlumnosServicios();
-        Alumno alumno = (Alumno) request.getAttribute("alumno");
-        request.setAttribute("json", as.insertAlumno(alumno));
+        NotasServicios a = new NotasServicios();
+        Nota nota = (Nota) request.getAttribute("nota");
+        request.setAttribute("json", a.insert_nota(nota));
 
         
     }
@@ -99,9 +110,9 @@ public class RestAlumnos extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-        AlumnosServicios as = new AlumnosServicios();
-        Alumno alumno = (Alumno) request.getAttribute("alumno");
-        request.setAttribute("json", as.updateAlumno(alumno));
+        NotasServicios a = new NotasServicios();
+        Nota nota = (Nota) request.getAttribute("nota");
+        request.setAttribute("json", a.update_nota(nota));
     }
 
     /**

@@ -21,6 +21,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import model.Alumno;
+import model.Asignatura;
+import model.Nota;
 
 /**
  *
@@ -52,14 +54,31 @@ public class FilterJson implements Filter
             log("FilterJson:DoBeforeProcessing");
         }
         ObjectMapper mapper = new ObjectMapper();
-
+        
         String alumno = request.getParameter("alumno");
         if (alumno != null)
         {
-            Alumno a = mapper.readValue(alumno, new TypeReference<Alumno>()
-            {
-            });
+            Alumno a = mapper.readValue(alumno, new TypeReference<Alumno>(){});
             request.setAttribute("alumno", a);
+        }
+        
+        String asignatura = request.getParameter("asignatura");
+        if (asignatura != null)
+        {
+            Asignatura b = mapper.readValue(asignatura, new TypeReference<Asignatura>(){});
+            request.setAttribute("asignatura", b);
+        }
+        
+        String nota = request.getParameter("nota");
+        if (nota != null)
+        {
+            Nota n = mapper.readValue(nota, new TypeReference<Nota>(){});
+            request.setAttribute("nota", n);
+        }
+        
+        if (request.getParameter("borrar_notas") != null)
+        {
+            request.setAttribute("borrar_notas", request.getParameter("borrar_notas"));
         }
         // Write code here to process the request and/or response before
         // the rest of the filter chain is invoked.
